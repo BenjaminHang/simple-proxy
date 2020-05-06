@@ -4,4 +4,3 @@ node_modules
 .vscode/
 *.vsix
 dist
-db/proxyTable.json

@@ -40,7 +40,7 @@ export class ProxyTableProvider implements vscode.TreeDataProvider<TableItem> {
   private tableItems: TableItem[] = [];
 
   constructor(private context: vscode.ExtensionContext) {
-    this.dbPath = path.resolve(context.extensionPath, 'db/proxyTable.json');
+    this.dbPath = path.resolve(context.globalStoragePath);
     this.app = new Koa();
 
 
@@ -108,7 +108,7 @@ export class ProxyTableProvider implements vscode.TreeDataProvider<TableItem> {
   }
 
   private getTableData(): TableItemData[] {
-    
+    console.log(fs.existsSync(this.dbPath));
     return fs.existsSync(this.dbPath) ? JSON.parse(fs.readFileSync(this.dbPath, 'utf8')) : [];
   }
 
@@ -128,7 +128,6 @@ export class ProxyTableProvider implements vscode.TreeDataProvider<TableItem> {
       placeHolder: 'enter name to create proxy'
     }).then(res => {
       if (!res) {return;}
-      // 往 proxyTable.json 里写一条
       let tableData = this.getTableData();
       
       if (tableData.some(item => item.label === res)) {
@@ -342,7 +341,6 @@ interface TableItemData {
 }
 
 function getWebviewContent(tableItemData: TableItemData): string {
-  // return fs.readFileSync(path.resolve(__dirname, './webview.html'), 'utf8');
   let pathRewriteNode = Object.keys(tableItemData.pathRewrite).map(v => {
     return `<li><input value="${v}"/>&nbsp;:&nbsp;<input value="${tableItemData.pathRewrite[v]}"/></li>`;
   });

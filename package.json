@@ -3,13 +3,15 @@
 	"displayName": "Simple Proxy",
 	"description": "just proxy",
 	"publisher": "benjaminHang",
-	"version": "0.0.1",
+	"version": "0.0.2",
+	"repository": "https://github.com/BenjaminHang/simple-proxy",
 	"engines": {
 		"vscode": "^1.44.0"
 	},
 	"categories": [
 		"Other"
 	],
+	"icon": "resources/proxy.svg",
 	"activationEvents": [
 		"onView:proxyTable",
 		"onCommand:simpleProxy.start"
