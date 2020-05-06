@@ -108,7 +108,8 @@ export class ProxyTableProvider implements vscode.TreeDataProvider<TableItem> {
   }
 
   private getTableData(): TableItemData[] {
-    return JSON.parse(fs.readFileSync(this.dbPath, 'utf8'));
+    
+    return fs.existsSync(this.dbPath) ? JSON.parse(fs.readFileSync(this.dbPath, 'utf8')) : [];
   }
 
   private setTableData(tableData: TableItemData[]): void {
@@ -246,8 +247,14 @@ export class ProxyTableProvider implements vscode.TreeDataProvider<TableItem> {
         await k2c(httpProxy((tableItem as TableItemData).location, options))(ctx, next);
       });
     });
-    
-    this.server = this.app.listen(62000);
+    let config = vscode.workspace.getConfiguration('simpleProxy');
+    let port = config.get('port');
+    try {
+      this.server = this.app.listen(port || 62000);
+      this.proxies.length === 1 && vscode.window.showInformationMessage(`proxy server has be started on port ${port || 62000}`);
+    } catch (error) {
+      vscode.window.showErrorMessage('proxy server cannot be started. reason: ', error);
+    }
   }
 
   pause(treeItem: TableItem): void {

@@ -11,6 +11,9 @@ module.exports = {
     libraryTarget: 'commonjs2',
     devtoolModuleFilenameTemplate: '../[resource-path]'
   },
+  stats: {
+    warningsFilter: [/critical dependency:/i],
+  },
   devtool: 'source-map',
   externals: {
     vscode: 'commonjs vscode'

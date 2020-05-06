@@ -1,8 +1,8 @@
 {
 	"name": "simpleproxy",
-	"displayName": "SimpleProxy",
+	"displayName": "Simple Proxy",
 	"description": "just proxy",
-	"publisher": "benjamin",
+	"publisher": "benjaminHang",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.44.0"
@@ -156,7 +156,17 @@
 				"view": "proxyTable",
 				"contents": "No proxies found.\n[Add Proxy](command:proxyTable.addEntry)"
 			}
-		]
+		],
+		"configuration": {
+			"title": "SimpleProxy",
+			"properties": {
+				"simpleProxy.port": {
+					"type": "integer",
+					"default": 62000,
+					"description": "the port listened by proxy server"
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
