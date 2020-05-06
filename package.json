@@ -11,7 +11,7 @@
 	"categories": [
 		"Other"
 	],
-	"icon": "resources/proxy.svg",
+	"icon": "resources/proxy.png",
 	"activationEvents": [
 		"onView:proxyTable",
 		"onCommand:simpleProxy.start"
