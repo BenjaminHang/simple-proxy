@@ -3,7 +3,7 @@
 	"displayName": "Simple Proxy",
 	"description": "just proxy",
 	"publisher": "benjaminHang",
-	"version": "0.0.2",
+	"version": "0.0.4",
 	"repository": "https://github.com/BenjaminHang/simple-proxy",
 	"engines": {
 		"vscode": "^1.44.0"
@@ -13,15 +13,27 @@
 	],
 	"icon": "resources/proxy.png",
 	"activationEvents": [
-		"onView:proxyTable",
-		"onCommand:simpleProxy.start"
+		"onCommand:simpleProxy.run",
+		"onCommand:simpleProxy.runAll",
+		"onCommand:simpleProxy.stop",
+		"onView:proxyTable"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "simpleProxy.start",
-				"title": "Proxy",
+				"command": "simpleProxy.run",
+				"title": "Run",
+				"category": "Simple Proxy"
+			},
+			{
+				"command": "simpleProxy.runAll",
+				"title": "Run All",
+				"category": "Simple Proxy"
+			},
+			{
+				"command": "simpleProxy.stop",
+				"title": "Stop",
 				"category": "Simple Proxy"
 			},
 			{

@@ -43,12 +43,38 @@ export class ProxyTableProvider implements vscode.TreeDataProvider<TableItem> {
     this.dbPath = path.resolve(context.globalStoragePath);
     this.app = new Koa();
 
-
-    let disposable = vscode.commands.registerCommand('simpleProxy.start', () => {
-      this.add();
+    let disposableRun = vscode.commands.registerCommand('simpleProxy.run', () => {
+      let tableData = this.getTableData();
+      if (!tableData.length) {
+        vscode.commands.executeCommand('proxyTable');
+        return vscode.window.showInformationMessage('There is no proxy to run. Please add proxy first.');
+      }
+      vscode.window.showQuickPick(tableData.map(item => ({
+        label: item.label,
+        description: `${item.location} : ${item.target}`,
+        picked: this.proxies.includes(item.label)
+      })), {
+        canPickMany: true,
+        placeHolder: 'select one or more proxies to run.'
+      }).then(res => {
+        res = res || [];
+        this.proxies = res.map(v => v.label);
+        this.run(null, true);
+      });
     });
 
-    context.subscriptions.push(disposable);
+    let disposableRunAll = vscode.commands.registerCommand('simpleProxy.runAll', () => {
+      let tableData = this.getTableData();
+      this.proxies = tableData.map(item => item.label);
+      this.run(null, true);
+    });
+
+    let disposableStop = vscode.commands.registerCommand('simpleProxy.stop', () => {
+      this.proxies = [];
+      this.run(null, true);
+    });
+
+    context.subscriptions.push(disposableRun, disposableRunAll, disposableStop);
 
     vscode.commands.registerCommand('proxyTable.refreshEntry', () => {
       this.refresh();
@@ -108,7 +134,6 @@ export class ProxyTableProvider implements vscode.TreeDataProvider<TableItem> {
   }
 
   private getTableData(): TableItemData[] {
-    console.log(fs.existsSync(this.dbPath));
     return fs.existsSync(this.dbPath) ? JSON.parse(fs.readFileSync(this.dbPath, 'utf8')) : [];
   }
 
@@ -214,7 +239,7 @@ export class ProxyTableProvider implements vscode.TreeDataProvider<TableItem> {
     }
   }
 
-  run(treeItem?: TableItem): void {
+  run(treeItem?: TableItem | null, showMessage?: Boolean): void {
     let tableData = this.getTableData();
 
     if (treeItem) {
@@ -228,7 +253,10 @@ export class ProxyTableProvider implements vscode.TreeDataProvider<TableItem> {
       this.server = undefined;
     }
 
-    if (!this.proxies.length) {return;}
+    if (!this.proxies.length) { 
+      showMessage && vscode.window.showInformationMessage('proxy server has be stopped.');
+      return ;
+    }
 
     this.app = new Koa();
 
@@ -250,7 +278,7 @@ export class ProxyTableProvider implements vscode.TreeDataProvider<TableItem> {
     let port = config.get('port');
     try {
       this.server = this.app.listen(port || 62000);
-      this.proxies.length === 1 && vscode.window.showInformationMessage(`proxy server has be started on port ${port || 62000}`);
+      showMessage && vscode.window.showInformationMessage(`proxy server has be started on port ${port || 62000}.`);
     } catch (error) {
       vscode.window.showErrorMessage('proxy server cannot be started. reason: ', error);
     }
@@ -259,7 +287,7 @@ export class ProxyTableProvider implements vscode.TreeDataProvider<TableItem> {
   pause(treeItem: TableItem): void {
     let index = this.proxies.findIndex(label => label === treeItem.label);
     this.proxies.splice(index, 1);
-    this.run();
+    this.run(null, false);
   }
 
   moveTop(treeItem: TableItem): void {
