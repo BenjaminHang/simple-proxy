@@ -122,19 +122,23 @@
 			"view/item/context": [
 				{
 					"command": "proxyTable.deleteItem",
-					"when": "view == proxyTable"
+					"when": "view == proxyTable",
+					"group": "2"
 				},
 				{
 					"command": "proxyTable.moveTop",
-					"when": "view == proxyTable"
+					"when": "view == proxyTable",
+					"group": "1@1"
 				},
 				{
 					"command": "proxyTable.moveUp",
-					"when": "view == proxyTable"
+					"when": "view == proxyTable",
+					"group": "1@2"
 				},
 				{
 					"command": "proxyTable.moveDown",
-					"when": "view == proxyTable"
+					"when": "view == proxyTable",
+					"group": "1@3"
 				},
 				{
 					"command": "proxyTable.runProxy",

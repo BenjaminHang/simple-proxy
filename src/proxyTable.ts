@@ -49,11 +49,21 @@ export class ProxyTableProvider implements vscode.TreeDataProvider<TableItem> {
         vscode.commands.executeCommand('proxyTable');
         return vscode.window.showInformationMessage('There is no proxy to run. Please add proxy first.');
       }
-      vscode.window.showQuickPick(tableData.map(item => ({
-        label: item.label,
-        description: `${item.location} : ${item.target}`,
-        picked: this.proxies.includes(item.label)
-      })), {
+      let pickItems = [];
+      if (this.proxies.length) {
+        pickItems = tableData.map(item => ({
+          label: item.label,
+          description: `${item.location} : ${item.target}`,
+          picked: this.proxies.includes(item.label)
+        }));
+      } else {
+        pickItems = tableData.map((item, index) => ({
+          label: item.label,
+          description: `${item.location} : ${item.target}`,
+          picked: index ? false : true
+        }));
+      }
+      vscode.window.showQuickPick(pickItems, {
         canPickMany: true,
         placeHolder: 'select one or more proxies to run.'
       }).then(res => {
